@@ -36,7 +36,7 @@ public class SetMechanism extends CommandBase {
   @Override
   public void execute() {
     double input = m_inputSupplier.getAsDouble();
-    if (Math.abs(input) > 0.05) {
+    if (Math.abs(input) > 0.15) {
       m_mechanism.setMotorPercentOutput(input);
     }
   }
