@@ -23,9 +23,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Mechanism mechanism = new Mechanism();
 
-  private final Joystick leftJoystick = new Joystick(Constants.leftJoystick);
-  private final JoystickButton leftTopButton = new JoystickButton(leftJoystick, 3);
-  private final JoystickButton leftBottomButton = new JoystickButton(leftJoystick, 4);
+  private final Joystick joystick = new Joystick(Constants.joystickPort);
+  private final JoystickButton pistonExtendButton = new JoystickButton(joystick, 3);
+  private final JoystickButton pistonRetractButton = new JoystickButton(joystick, 4);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -35,7 +35,8 @@ public class RobotContainer {
   }
 
   private void initializeSubsystems() {
-    mechanism.setDefaultCommand(new SetMechanism(mechanism, () -> leftJoystick.getRawAxis(1)));
+    mechanism.initializeMotors();
+    mechanism.setDefaultCommand(new SetMechanism(mechanism, () -> joystick.getRawAxis(1)));
   }
 
     /**
@@ -45,8 +46,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    leftTopButton.whenPressed(new SetPiston(mechanism, true));
-    leftBottomButton.whenPressed(new SetPiston(mechanism, false));
+    pistonExtendButton.whenPressed(new SetPiston(mechanism, true));
+    pistonRetractButton.whenPressed(new SetPiston(mechanism, false));
   }
 
   /**

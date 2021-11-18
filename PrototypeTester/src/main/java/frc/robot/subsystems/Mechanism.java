@@ -19,61 +19,87 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+/**
+ * Mechanism for testing prototypes, with one motor and one piston
+ */
 public class Mechanism extends SubsystemBase {
-  // private final TalonFX talonFX = new TalonFX(Constants.talonFXPort);
-  // private final TalonSRX talonSRX = new TalonSRX(Constants.talonSRXPort);
-  private final CANSparkMax sparkMax = new CANSparkMax(Constants.sparkMaxPort, MotorType.kBrushless);
+  private TalonFX talonFX;
+  private TalonSRX talonSRX;
+  private CANSparkMax sparkMax;
 
   SendableChooser<Integer> motorTypeChooser = new SendableChooser();
+  private boolean usingTalonFX = true;
+  private boolean usingTalonSRX = true;
+  private boolean usingSparkMax = true;
+
   private int motorType = 0; // 0  = TalonFX, 1 = TalonSRX, 2 = Spark
 
   private final DoubleSolenoid piston = new DoubleSolenoid(Constants.pcmOne, Constants.pistonForward, Constants.pistonReverse);
 
-  /** Creates a new ExampleSubsystem. */
+  /** Creates a mechanism with one motor and one piston */
   public Mechanism() {
-    motorTypeChooser.addDefault("TalonFX", 0);
-    motorTypeChooser.addOption("TalonSRX", 1);
-    motorTypeChooser.addOption("Spark", 2);
-    SmartDashboard.putData(motorTypeChooser);
+  }
 
-    motorType = motorTypeChooser.getSelected();
+  public void initializeMotors() {
+    usingTalonFX = true;
+    usingTalonSRX = true;
+    usingSparkMax = true;
 
-    // if (motorType == 0) {
-    //   talonFX.configFactoryDefault();
-    //   talonFX.configOpenloopRamp(0.1);
-    //   talonFX.configClosedloopRamp(0.1);
-    //   talonFX.setNeutralMode(NeutralMode.Coast);
-    //   talonFX.configForwardSoftLimitEnable(false);
-    //   talonFX.configReverseSoftLimitEnable(false);
-    //   talonFX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
-    // } else if (motorType == 1) {
-    //   talonSRX.configFactoryDefault();
-    //   talonSRX.configOpenloopRamp(0.1);
-    //   talonSRX.configClosedloopRamp(0.1);
-    //   talonSRX.setNeutralMode(NeutralMode.Coast);
-    //   talonSRX.configForwardSoftLimitEnable(false);
-    //   talonSRX.configReverseSoftLimitEnable(false);
-    //   talonSRX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
-    // } else {
+    try {
+      talonFX = new TalonFX(Constants.talonFXPort);
+      talonFX.configFactoryDefault();
+      talonFX.configOpenloopRamp(0.1);
+      talonFX.configClosedloopRamp(0.1);
+      talonFX.setNeutralMode(NeutralMode.Coast);
+      talonFX.configForwardSoftLimitEnable(false);
+      talonFX.configReverseSoftLimitEnable(false);
+      talonFX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
+    } catch (Exception e) {
+      usingTalonFX = false;
+    }
+
+    try {
+      talonSRX = new TalonSRX(Constants.talonSRXPort);
+      talonSRX.configFactoryDefault();
+      talonSRX.configOpenloopRamp(0.1);
+      talonSRX.configClosedloopRamp(0.1);
+      talonSRX.setNeutralMode(NeutralMode.Coast);
+      talonSRX.configForwardSoftLimitEnable(false);
+      talonSRX.configReverseSoftLimitEnable(false);
+      talonSRX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
+    } catch (Exception e) {
+      usingTalonSRX = false;
+    }
+
+    try {
+      sparkMax = new CANSparkMax(Constants.sparkMaxPort, MotorType.kBrushless);
       sparkMax.restoreFactoryDefaults();
       sparkMax.setIdleMode(CANSparkMax.IdleMode.kCoast);
       sparkMax.setInverted(false);
-    // }
+    } catch (Exception e) {
+      usingSparkMax = false;
+    }
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putBoolean("TalonFX Found", usingTalonFX);
+    SmartDashboard.putBoolean("TalonSRX Found", usingTalonSRX);
+    SmartDashboard.putBoolean("SparkMAX Found", usingSparkMax);
   }
 
   public void setMotorPercentOutput(double input) {
-    // if (motorType == 0) {
-    //   talonFX.set(ControlMode.PercentOutput, input);
-    // } else if (motorType == 1) {
-    //   talonSRX.set(ControlMode.PercentOutput, input);
-    // } else {
+    if (usingTalonFX) {
+      talonFX.set(ControlMode.PercentOutput, input);
+    }
+    if (usingTalonSRX) {
+      talonSRX.set(ControlMode.PercentOutput, input);
+    } 
+    if (usingSparkMax) {
       sparkMax.set(input);
-    // }
+    }
   }
 
   public void setPiston(boolean extend) {

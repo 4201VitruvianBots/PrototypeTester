@@ -10,16 +10,19 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** An example command that uses an example subsystem. */
+/**
+ * Sets the mechanism's motor based on joystick input
+ */
 public class SetMechanism extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Mechanism m_mechanism;
   private final DoubleSupplier m_inputSupplier;
 
   /**
-   * Creates a new ExampleCommand.
+   * Sets the mechanism's motor based on joystick input
    *
-   * @param subsystem The subsystem used by this command.
+   * @param mechanism the mechanism to set
+   * @param inputSupplier the joystick supplying motor percent inputs
    */
   public SetMechanism(Mechanism mechanism, DoubleSupplier inputSupplier) {
     m_mechanism = mechanism;
@@ -36,8 +39,10 @@ public class SetMechanism extends CommandBase {
   @Override
   public void execute() {
     double input = m_inputSupplier.getAsDouble();
-    if (Math.abs(input) > 0.15) {
+    if (Math.abs(input) > 0.05) {
       m_mechanism.setMotorPercentOutput(input);
+    } else {
+      m_mechanism.setMotorPercentOutput(0);
     }
   }
 

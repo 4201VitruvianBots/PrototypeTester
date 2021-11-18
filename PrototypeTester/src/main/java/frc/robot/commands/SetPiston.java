@@ -11,13 +11,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Mechanism;;
 
 /**
- * Sets the piston that raises/lowers the intake.
+ * Sets the mechanism's piston
  */
 public class SetPiston extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final Mechanism m_mechanism;
     private final boolean m_extend;
 
+    /**
+     * Sets the mechanism's piston
+     * @param mechansim the mechanism to set
+     * @param extend whether the piston should be extended (true) or retracted (false)
+     */
     public SetPiston(Mechanism mechansim, boolean extend) {
         m_mechanism = mechansim;
         // Use addRequirements() here to declare subsystem dependencies.
