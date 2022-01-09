@@ -32,7 +32,7 @@ public class Mechanism extends SubsystemBase {
   private boolean usingTalonSRX = true;
   private boolean usingSparkMax = true;
 
-  private int motorType = 0; // 0  = TalonFX, 1 = TalonSRX, 2 = Spark
+  private int motorType = 1; // 0  = TalonFX, 1 = TalonSRX, 2 = Spark
 
   private final DoubleSolenoid piston = new DoubleSolenoid(Constants.pcmOne, Constants.pistonForward, Constants.pistonReverse);
 
